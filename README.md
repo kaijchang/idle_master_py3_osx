@@ -31,13 +31,13 @@ The configuration is read from `settings.json`.
 }
 ```
 
-`sessionid` - Go to [chrome://settings/siteData](chrome://settings/siteData) and search for `steamcommunity.com`. Fill in `sessionid` with the value of the `sessionid` cookie.
+`sessionid` - Go to `chrome://settings/siteData` and search for `steamcommunity.com`. Fill in `sessionid` with the value of the `sessionid` cookie.
 
 `steamLoginSecure` - Same as above.
 
 `steamparental` (optional) - Same as above, only needed for some accounts.
 
-`sort` (optional) - If specified, sorts the order in which the games are idled. Options are `mostcards`, which idles the games with the most card drops available first, and `leastcards`, which does the opposite.
+`sort` (optional) - If specified, sorts the order in which the games are idled. Possible sort types are `mostcards`, which idles the games with the most card drops available first, and `leastcards`, which does the opposite.
 
 `delayPerCard` - Amount of time per card, in minutes, to wait between querying for how many card drops are remaining for the game. For example, if the `delayPerCard` is set to `5`, it will check every twenty minutes if there are four card drops remaining.
 

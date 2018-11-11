@@ -2,5 +2,8 @@
   "sessionid": "",
   "steamLoginSecure": "",
   "steamparental": "",
-  "sort": ""
+  "sort": "",
+  "delayPerCard": 5,
+  "blacklist": [
+  ]
 }

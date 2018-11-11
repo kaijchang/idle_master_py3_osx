@@ -42,6 +42,10 @@ class SteamIdle:
 
         self.accountId = settings["steamLoginSecure"][:17]
 
+        self.sort = settings["sort"]
+        self.blacklist = settings["blacklist"]
+        self.delayPerCard = settings["delayPerCard"]
+
         self.logger.info(Fore.GREEN + "Finding games that have card drops remaining" + Fore.RESET)
 
         self.gamesLeft = self.getGames()
@@ -54,8 +58,8 @@ class SteamIdle:
                 self.startIdling(game)
 
                 while game.cardsLeft != 0:
-                    self.logger.info(Fore.BLUE + "Sleeping for {} minutes".format(5 * game.cardsLeft) + Fore.RESET)
-                    time.sleep(5 * game.cardsLeft * 60)
+                    self.logger.info(Fore.BLUE + "Sleeping for {} minutes".format(self.delayPerCard * game.cardsLeft) + Fore.RESET)
+                    time.sleep(self.delayPerCard * game.cardsLeft * 60)
 
                     self.updateCardsLeft(game)
 
@@ -99,6 +103,37 @@ class SteamIdle:
                 ) for game in filter(lambda p: re.match(r"https:\/\/steamcommunity.com\/id\/.+\/gamecards\/([0-9]{6})\/", p.find("a", {"class": "badge_row_overlay"})["href"]) and p.find("span", {"class": "progress_info_bold"}), gameSoup.find_all("div", {"class": "badge_row"}))
             ])
         )
+
+        if self.blacklist:
+            self.logger.info(Fore.BLUE + "Applying blacklist" + Fore.RESET)
+
+            gamesBeforeBlacklist = len(games)
+
+            games = list(
+                filter(lambda game: game.gameId not in self.blacklist, games)
+            )
+
+            self.logger.info(Fore.BLUE + "The blacklist removed {} games".format(gamesBeforeBlacklist - len(games)) + Fore.RESET)
+
+        else:
+            self.logger.info(Fore.BLUE + "No blacklist found" + Fore.RESET)
+
+        if self.sort:
+            if self.sort == "leastcards":
+                games.sort(key=lambda game: game.cardsLeft)
+
+                self.logger.info(Fore.BLUE + "Sorted from least to most card drops remaining" + Fore.RESET)
+
+            elif self.sort == "mostcards":
+                games.sort(key=lambda game: game.cardsLeft, reverse=True)
+
+                self.logger.info(Fore.BLUE + "Sorted from most to least card drops remaining" + Fore.RESET)
+
+            else:
+                self.logger.warning(Fore.RED + "Skipping sort in config, unknown sort type: {}".format(self.sort) + Fore.RESET)
+
+        else:
+            self.logger.info(Fore.BLUE + "No sort found" + Fore.RESET)
 
         self.logger.info(Fore.GREEN + "Found {} games and {} trading cards to idle:".format(
             len(games),

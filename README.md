@@ -14,10 +14,34 @@ Requirements
 
 This application requires Steam to be open and for you to be logged in.
 
-Setup
+Config
 -------
 
-Please read the included Setup Instructions.pdf file for detailed setup instructions and frequently asked questions.
+The configuration is read from `settings.json`.
+
+```json
+{
+  "sessionid": "",
+  "steamLoginSecure": "",
+  "steamparental": "",
+  "sort": "",
+  "delayPerCard": 5,
+  "blacklist": [
+  ]
+}
+```
+
+`sessionid` - Go to [chrome://settings/siteData](chrome://settings/siteData) and search for `steamcommunity.com`. Fill in `sessionid` with the value of the `sessionid` cookie.
+
+`steamLoginSecure` - Same as above.
+
+`steamparental` (optional) - Same as above, only needed for some accounts.
+
+`sort` (optional) - If specified, sorts the order in which the games are idled. Options are `mostcards`, which idles the games with the most card drops available first, and `leastcards`, which does the opposite.
+
+`delayPerCard` - Amount of time per card, in minutes, to wait between querying for how many card drops are remaining for the game. For example, if the `delayPerCard` is set to `5`, it will check every twenty minutes if there are four card drops remaining.
+
+`blacklist` - List of steam app ids to ignore (to not idle). For example, to ignore Torchlight II, you would look at the steam store url: `https://store.steampowered.com/app/200710/Torchlight_II/`, and put the id `200710` into the blacklist.
 
 Authors
 -------

@@ -22,6 +22,8 @@ Authors
 
 jshackles and Stumpokapow
 
+Optimized and rewritten by kajchang.
+
 steam-idle was writen in C# using Steamworks.NET and CSteamworks by Riley Labrecque
 
 License

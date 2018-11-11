@@ -47,22 +47,24 @@ class SteamIdle:
 
         self.logger.info("Finding games that have card drops remaining")
 
-        self.getBadges()
+        self.games = self.getGames()
 
-    def getBadges(self):
-        badgeSoup = BeautifulSoup(
+    def getGames(self):
+        gameSoup = BeautifulSoup(
             self.session.get("http://steamcommunity.com/profiles/{}/badges".format(self.id_)).text,
             "html.parser")
 
         games = [
             Game(
-                re.match(r"([0-9]+|(No)) card drops? remaining", game.find("span", {"class": "progress_info_bold"}).text).group(1) if re.match(r"([0-9]+|(No)) card drops? remaining", game.find("span", {"class": "progress_info_bold"}).text).group(1) != "No" else 0,
+                int(re.match(r"([0-9]+|(No)) card drops? remaining", game.find("span", {"class": "progress_info_bold"}).text).group(1)) if re.match(r"([0-9]+|(No)) card drops? remaining", game.find("span", {"class": "progress_info_bold"}).text).group(1) != "No" else 0,
                 int(re.match(r"https:\/\/steamcommunity.com\/id\/.+\/gamecards\/([0-9]{6})\/", game.find("a", {"class": "badge_row_overlay"})["href"]).group(1)),
                 game.find("div", {"class": "badge_title"}).text.replace("View details", "").strip()
-            ) for game in filter(lambda p: re.match(r"https:\/\/steamcommunity.com\/id\/.+\/gamecards\/([0-9]{6})\/", p.find("a", {"class": "badge_row_overlay"})["href"]) and p.find("span", {"class": "progress_info_bold"}), badgeSoup.find_all("div", {"class": "badge_row"})[:-1])
+            ) for game in filter(lambda p: re.match(r"https:\/\/steamcommunity.com\/id\/.+\/gamecards\/([0-9]{6})\/", p.find("a", {"class": "badge_row_overlay"})["href"]) and p.find("span", {"class": "progress_info_bold"}), gameSoup.find_all("div", {"class": "badge_row"})[:-1])
         ]
 
-        self.logger.info(Fore.GREEN + "Found {} Games.".format(len(games)) + Fore.RESET)
+        self.logger.info(Fore.GREEN + "Found {} games and {} trading cards to idle".format(
+            len(games),
+            sum(game.cardsLeft for game in games)) + Fore.RESET)
 
         return games
 

@@ -12,7 +12,11 @@ For the latest Windows version of Idle Master, [click here](https://github.com/j
 Requirements
 -------
 
-This application requires Steam to be open and for you to be logged in.
+This application requires the Steam desktop application to be open and for you to be logged in. 
+
+It will also require you to be logged in semi-recently on `steamcommunity.com` so it can read the cookies from the browser. It may also ask for an administrator password if it doesn't yet have access to your browser's storage.
+
+Finally, you will need to install python dependencies with `pip3 install -r requirements.txt`.
 
 Config
 -------
@@ -21,21 +25,12 @@ The configuration is read from `settings.json`.
 
 ```json
 {
-  "sessionid": "",
-  "steamLoginSecure": "",
-  "steamparental": "",
   "sort": "",
   "delayPerCard": 5,
   "blacklist": [
   ]
 }
 ```
-
-`sessionid` - Go to `chrome://settings/siteData` and search for `steamcommunity.com`. Fill in `sessionid` with the value of the `sessionid` cookie.
-
-`steamLoginSecure` - Same as above.
-
-`steamparental` (optional) - Same as above, only needed for some accounts.
 
 `sort` (optional) - If specified, sorts the order in which the games are idled. Possible sort types are `mostcards`, which idles the games with the most card drops available first, and `leastcards`, which does the opposite.
 

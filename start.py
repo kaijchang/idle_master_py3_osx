@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import browser_cookie3
 import time
 import re
 import subprocess
@@ -36,11 +37,9 @@ class SteamIdle:
         self.logger.info(Fore.GREEN + "WELCOME TO IDLE MASTER" + Fore.RESET)
 
         self.session = requests.Session()
-        self.session.cookies.set(name="steamLoginSecure", value=settings["steamLoginSecure"])
-        self.session.cookies.set(name="sessionid", value=settings["sessionid"])
-        self.session.cookies.set(name="steamparental", value=settings["steamparental"])
+        self.session.cookies = browser_cookie3.load(domain_name='steamcommunity.com')
 
-        self.accountId = settings["steamLoginSecure"][:17]
+        self.accountId = requests.utils.dict_from_cookiejar(self.session.cookies)["steamLoginSecure"][:17]
 
         self.sort = settings["sort"]
         self.blacklist = settings["blacklist"]
@@ -154,7 +153,7 @@ class SteamIdle:
             self.child = subprocess.Popen(["./steam-idle", str(game.gameId)])
 
     def stopIdling(self):
-        self.logger.info(Fore.GREEN + "Killing Idle Master process" + Fore.RESET)
+        self.logger.info(Fore.GREEN + "Killing steam-idle process" + Fore.RESET)
         self.child.terminate()
 
 

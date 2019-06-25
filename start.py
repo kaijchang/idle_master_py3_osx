@@ -37,9 +37,12 @@ class SteamIdle:
         self.logger.info(Fore.GREEN + "WELCOME TO IDLE MASTER" + Fore.RESET)
 
         self.session = requests.Session()
-        self.session.cookies = browser_cookie3.load(domain_name='steamcommunity.com')
+        self.session.cookies = browser_cookie3.load(domain_name="steamcommunity.com")
 
-        self.accountId = requests.utils.dict_from_cookiejar(self.session.cookies)["steamLoginSecure"][:17]
+        try:
+            self.accountId = requests.utils.dict_from_cookiejar(self.session.cookies)["steamLoginSecure"][:17]
+        except KeyError:
+            self.logger.error(Fore.RED + "Unable to load cookies, login into https://steamcommunity.com then try again." + Fore.RESET)
 
         self.sort = settings["sort"]
         self.blacklist = settings["blacklist"]
@@ -89,7 +92,7 @@ class SteamIdle:
 
     def getGames(self):
         gameSoup = BeautifulSoup(
-            self.session.get("http://steamcommunity.com/profiles/{}/badges".format(self.accountId)).text,
+            self.session.get("https://steamcommunity.com/profiles/{}/badges".format(self.accountId)).text,
             "html.parser"
         )
 
